@@ -1,0 +1,15 @@
+language: go
+
+go:
+  - 1.x
+
+script:
+  - CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o whoami .
+  - docker build -t locnh/whoami .
+
+deploy:
+  - provider: script
+    script: bash scripts/docker-push.sh
+    on:
+      all_branches: true
+      condition: $TRAVIS_BRANCH =~ ^(master|devel)$
