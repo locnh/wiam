@@ -16,14 +16,18 @@ type clientInfo struct {
 
 func main() {
 	r := gin.Default()
-	r.GET("/", func(c *gin.Context) {
+
+	r.NoRoute(func(c *gin.Context) {
 		client := getClientInfo(c)
+
 		c.JSON(200, gin.H{
 			"ip":          client.ip,
 			"country":     client.country,
 			"countrycode": client.countrycode,
 			"browser":     client.browser,
 			"os":          client.os,
+			"req_host":    c.Request.Host,
+			"req_uri":     c.Request.RequestURI,
 		})
 	})
 	r.Run()
@@ -41,7 +45,7 @@ func getClientInfo(c *gin.Context) clientInfo {
 	}
 
 	// GeoIP
-	client.countrycode = c.GetHeader("HTTP_CF_IPCOUNTRY")
+	client.countrycode = c.GetHeader("cf-ipcountry")
 	if client.country, ok = countrycode[client.countrycode]; !ok {
 		client.country = "unknown"
 	}
