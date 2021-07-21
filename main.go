@@ -1,6 +1,8 @@
 package main
 
 import (
+	"net/http"
+
 	bgo "github.com/digitalcrab/browscap_go"
 	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
@@ -17,6 +19,20 @@ type clientInfo struct {
 func main() {
 	r := gin.Default()
 
+	// return only IP, for no-ip, ddns services alike
+	r.GET("/ip", func(c *gin.Context) {
+		if c.GetHeader("HTTP_CF_CONNECTING_IP") != "" {
+			c.String(http.StatusOK, "%s", c.GetHeader("HTTP_CF_CONNECTING_IP"))
+		} else {
+			c.String(http.StatusOK, "%s", c.ClientIP())
+		}
+	})
+
+	// return header, for debugging behind CDN
+	r.GET("/header", func(c *gin.Context) {
+		c.JSON(200, c.Request.Header)
+	})
+
 	r.NoRoute(func(c *gin.Context) {
 		client := getClientInfo(c)
 
@@ -30,6 +46,7 @@ func main() {
 			"req_uri":     c.Request.RequestURI,
 		})
 	})
+
 	r.Run()
 }
 
