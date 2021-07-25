@@ -1,15 +1,7 @@
-# whoami
+# Who / Where I am?
 A small app written in [golang](https://golang.org) to echo HTTP client's IP.
 
-```JSON
-{
-  "browser": "Chrome",
-  "country": "United States of America",
-  "countrycode": "US",
-  "ip": "192.40.58.239",
-  "os": "macOS"
-}
-```
+Live here: [wiam.cc](https://wiam.cc)
 
 These are the Docker Hub autobuild images located [here](https://hub.docker.com/r/locnh/whoami/).
 
@@ -19,26 +11,73 @@ These are the Docker Hub autobuild images located [here](https://hub.docker.com/
 [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/locnh/whoami?sort=semver)](/Dockerfile)
 [![Docker](https://img.shields.io/docker/pulls/locnh/whoami)](https://hub.docker.com/r/locnh/whoami)
 
-# Usage
-## ** Docker **
-### Parameters as ENV variables
+## Fearure
 
-| Variable | Description | Mandatory | Default |
-|-----|-----|-----|-----|
-| `FULLBC` | `bool` toggle to load [`browscap.ini`](https://browscap.org/) | No | `null` |
+```JSON
+GET /
 
+{
+  "city": "Berlin",
+  "country": "Germany",
+  "ip": "193.176.86.134"
+}
+```
+
+```JSON
+GET /request
+
+{
+  "host": "wiam.cc",
+  "method": "GET",
+  "proto": "HTTP/1.0",
+  "uri": "/request"
+}
+```
+
+```JSON
+GET /header
+
+{
+  "Accept": [
+    "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
+  ],
+  "Accept-Encoding": [
+    "gzip, deflate, br"
+  ],
+  "Accept-Language": [
+    "en-GB,en;q=0.9,en-US;q=0.8,vi;q=0.7,de;q=0.6"
+  ],
+  
+  ...
+
+  "User-Agent": [
+    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.107 Safari/537.36 Edg/92.0.902.55"
+  ],
+  "Via": [
+    "2.0 d91961fd00a0c4f7aae668984dcb62a8.cloudfront.net (CloudFront)"
+  ],
+  "X-Amz-Cf-Id": [
+    "ipaVdETgdefi9vQAvH31Wy2ObjyctilDNMBpm9VtdaJISURf3CZPTg=="
+  ],
+  "X-Forwarded-For": [
+    "193.176.86.134"
+  ]
+}
+```
+
+## Usage
 ### Run a Docker container
 
-With default `browscap.ini`
+Default production mode
 
 ```sh
 docker run -p 8080:8080 -d locnh/whoami
 ```
 
-or full `browscap.ini`
+or GIN debug
 
 ```sh
-docker run -p 8080:8080 -e FULLBC=true -d locnh/whoami
+docker run -p 8080:8080 -e GIN_MODE=debug -d locnh/whoami
 ```
 
 ## Contribute
