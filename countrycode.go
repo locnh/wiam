@@ -157,7 +157,7 @@ var countrycode = map[string]string{
 	"NR": "Nauru",
 	"NP": "Nepal",
 	"AN": "Netherlands Antilles",
-	"NL": "Netherlands the",
+	"NL": "Netherlands",
 	"NC": "New Caledonia",
 	"NZ": "New Zealand",
 	"NI": "Nicaragua",

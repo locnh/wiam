@@ -20,5 +20,6 @@ COPY scripts/docker-entrypoint.sh /entrypoint.sh
 COPY --from=builder /app/whoami /whoami
 
 EXPOSE 8080
+ENV GIN_MODE=release
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/whoami"]

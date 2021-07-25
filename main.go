@@ -1,30 +1,20 @@
 package main
 
 import (
-	"net/http"
+	"encoding/json"
 
-	bgo "github.com/digitalcrab/browscap_go"
 	"github.com/gin-gonic/gin"
-	log "github.com/sirupsen/logrus"
 )
-
-type clientInfo struct {
-	ip          string
-	browser     string
-	os          string
-	country     string
-	countrycode string
-}
 
 func main() {
 	r := gin.Default()
 
 	// return only IP, for no-ip, ddns services alike
 	r.GET("/ip", func(c *gin.Context) {
-		if c.GetHeader("HTTP_CF_CONNECTING_IP") != "" {
-			c.String(http.StatusOK, "%s", c.GetHeader("HTTP_CF_CONNECTING_IP"))
+		if c.GetHeader("X-Forwarded-For") != "" {
+			c.String(200, "%s", c.GetHeader("X-Forwarded-For"))
 		} else {
-			c.String(http.StatusOK, "%s", c.ClientIP())
+			c.String(200, "%s", c.ClientIP())
 		}
 	})
 
@@ -33,53 +23,60 @@ func main() {
 		c.JSON(200, c.Request.Header)
 	})
 
-	r.NoRoute(func(c *gin.Context) {
-		client := getClientInfo(c)
+	r.GET("/request", func(c *gin.Context) {
+		json, err := json.MarshalIndent(getRequestInfo(c), "", "  ")
+		if err != nil {
+			c.JSON(500, gin.H{"result": "failed"})
+		} else {
+			c.String(200, "%s", json)
+		}
+	})
 
-		c.JSON(200, gin.H{
-			"ip":          client.ip,
-			"country":     client.country,
-			"countrycode": client.countrycode,
-			"browser":     client.browser,
-			"os":          client.os,
-			"req_host":    c.Request.Host,
-			"req_uri":     c.Request.RequestURI,
-		})
+	r.NoRoute(func(c *gin.Context) {
+		json, err := json.MarshalIndent(getClientInfo(c), "", "  ")
+		if err != nil {
+			c.JSON(500, gin.H{"result": "failed"})
+		} else {
+			c.String(200, "%s", json)
+		}
 	})
 
 	r.Run()
 }
 
-func getClientInfo(c *gin.Context) clientInfo {
-	client := clientInfo{}
-	var ok bool
+func getClientInfo(c *gin.Context) map[string]string {
+	client := make(map[string]string)
 
 	// Client IP
-	if c.GetHeader("HTTP_CF_CONNECTING_IP") != "" {
-		client.ip = c.GetHeader("HTTP_CF_CONNECTING_IP")
+	if c.GetHeader("X-Forwarded-For") != "" {
+		client["ip"] = c.GetHeader("X-Forwarded-For")
 	} else {
-		client.ip = c.ClientIP()
+		client["ip"] = c.ClientIP()
 	}
 
-	// GeoIP
-	client.countrycode = c.GetHeader("cf-ipcountry")
-	if client.country, ok = countrycode[client.countrycode]; !ok {
-		client.country = "unknown"
+	// CloudFlare
+	if c.GetHeader("cf-ipcountry") != "" {
+		client["country"] = countrycode[c.GetHeader("cf-ipcountry")]
 	}
 
-	// Client OS, Browser, Country, Countrycode
-	if err := bgo.InitBrowsCap("browscap.ini", false); err != nil {
-		log.Error(err)
+	// CloudFront
+	if c.GetHeader("Cloudfront-Viewer-Country-Name") != "" {
+		client["country"] = c.GetHeader("Cloudfront-Viewer-Country-Name")
+	}
+	if c.GetHeader("Cloudfront-Viewer-City") != "" {
+		client["city"] = c.GetHeader("Cloudfront-Viewer-City")
 	}
 
-	browser, ok := bgo.GetBrowser(c.GetHeader("User-Agent"))
-	if !ok || browser == nil {
-		client.os = "unknown"
-		client.browser = "unknown"
-	} else {
-		client.os = browser.Platform
-		client.browser = browser.Browser
-	}
+	return client
+}
+
+func getRequestInfo(c *gin.Context) map[string]string {
+	client := make(map[string]string)
+
+	client["host"] = c.Request.Host
+	client["uri"] = c.Request.RequestURI
+	client["proto"] = c.Request.Proto
+	client["method"] = c.Request.Method
 
 	return client
 }
