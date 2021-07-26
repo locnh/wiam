@@ -75,8 +75,11 @@ func getRequestInfo(c *gin.Context) map[string]string {
 
 	client["host"] = c.Request.Host
 	client["uri"] = c.Request.RequestURI
-	client["proto"] = c.Request.Proto
 	client["method"] = c.Request.Method
+
+	if c.GetHeader("Cloudfront-Viewer-Http-Version") != "" {
+		client["proto"] = c.GetHeader("Cloudfront-Viewer-Http-Version")
+	}
 
 	return client
 }
