@@ -3,13 +3,13 @@ A small app written in [golang](https://golang.org) to echo HTTP client's IP.
 
 Live here: [wiam.cc](https://wiam.cc)
 
-These are the Docker Hub autobuild images located [here](https://hub.docker.com/r/locnh/whoami/).
+These are the Docker Hub autobuild images located [here](https://hub.docker.com/r/locnh/wiam/).
 
-[![License](https://img.shields.io/github/license/locnh/whoami)](/LICENSE)
-[![Build Status](https://travis-ci.org/locnh/whoami.svg?branch=master)](https://travis-ci.org/locnh/whoami)
-[![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/locnh/whoami?sort=semver)](/Dockerfile)
-[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/locnh/whoami?sort=semver)](/Dockerfile)
-[![Docker](https://img.shields.io/docker/pulls/locnh/whoami)](https://hub.docker.com/r/locnh/whoami)
+[![License](https://img.shields.io/github/license/locnh/wiam)](/LICENSE)
+[![Build Status](https://travis-ci.org/locnh/wiam.svg?branch=master)](https://travis-ci.org/locnh/wiam)
+[![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/locnh/wiam?sort=semver)](/Dockerfile)
+[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/locnh/wiam?sort=semver)](/Dockerfile)
+[![Docker](https://img.shields.io/docker/pulls/locnh/wiam)](https://hub.docker.com/r/locnh/wiam)
 
 ## Fearure
 
@@ -60,7 +60,7 @@ GET /header
     "ipaVdETgdefi9vQAvH31Wy2ObjyctilDNMBpm9VtdaJISURf3CZPTg=="
   ],
   "X-Forwarded-For": [
-    "193.176.86.134"
+    "37.120.196.54"
   ]
 }
 ```
