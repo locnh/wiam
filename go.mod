@@ -1,4 +1,4 @@
-module whoami
+module wiam
 
 go 1.16
 

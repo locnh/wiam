@@ -3,13 +3,13 @@ A small app written in [golang](https://golang.org) to echo HTTP client's IP.
 
 Live here: [wiam.cc](https://wiam.cc)
 
-These are the Docker Hub autobuild images located [here](https://hub.docker.com/r/locnh/whoami/).
+These are the Docker Hub autobuild images located [here](https://hub.docker.com/r/locnh/wiam/).
 
-[![License](https://img.shields.io/github/license/locnh/whoami)](/LICENSE)
-[![Build Status](https://travis-ci.org/locnh/whoami.svg?branch=master)](https://travis-ci.org/locnh/whoami)
-[![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/locnh/whoami?sort=semver)](/Dockerfile)
-[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/locnh/whoami?sort=semver)](/Dockerfile)
-[![Docker](https://img.shields.io/docker/pulls/locnh/whoami)](https://hub.docker.com/r/locnh/whoami)
+[![License](https://img.shields.io/github/license/locnh/wiam)](/LICENSE)
+[![Build Status](https://travis-ci.com/locnh/wiam.svg?branch=master)](https://travis-ci.com/locnh/wiam)
+[![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/locnh/wiam?sort=semver)](/Dockerfile)
+[![Docker Image Version (latest semver)](https://img.shields.io/docker/v/locnh/wiam?sort=semver)](/Dockerfile)
+[![Docker](https://img.shields.io/docker/pulls/locnh/wiam)](https://hub.docker.com/r/locnh/wiam)
 
 ## Fearure
 
@@ -17,20 +17,20 @@ These are the Docker Hub autobuild images located [here](https://hub.docker.com/
 GET /
 
 {
-  "city": "Berlin",
+  "city": "Frankfurt am Main",
   "country": "Germany",
-  "ip": "193.176.86.134"
+  "ip": "37.120.196.54"
 }
 ```
 
 ```JSON
-GET /request
+GET /request?whatever
 
 {
   "host": "wiam.cc",
   "method": "GET",
   "proto": "HTTP/1.0",
-  "uri": "/request"
+  "uri": "/request?whatever"
 }
 ```
 
@@ -60,7 +60,7 @@ GET /header
     "ipaVdETgdefi9vQAvH31Wy2ObjyctilDNMBpm9VtdaJISURf3CZPTg=="
   ],
   "X-Forwarded-For": [
-    "193.176.86.134"
+    "37.120.196.54"
   ]
 }
 ```
@@ -71,13 +71,13 @@ GET /header
 Default production mode
 
 ```sh
-docker run -p 8080:8080 -d locnh/whoami
+docker run -p 8080:8080 -d locnh/wiam
 ```
 
 or GIN debug
 
 ```sh
-docker run -p 8080:8080 -e GIN_MODE=debug -d locnh/whoami
+docker run -p 8080:8080 -e GIN_MODE=debug -d locnh/wiam
 ```
 
 ## Contribute
