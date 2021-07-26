@@ -8,14 +8,14 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o whoami .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o wiam .
 
 
 FROM alpine
 
-COPY --from=builder /app/whoami /whoami
+COPY --from=builder /app/wiam /wiam
 
 EXPOSE 8080
 ENV GIN_MODE=release
 
-ENTRYPOINT ["/whoami"]
+ENTRYPOINT ["/wiam"]

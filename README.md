@@ -17,20 +17,20 @@ These are the Docker Hub autobuild images located [here](https://hub.docker.com/
 GET /
 
 {
-  "city": "Berlin",
+  "city": "Frankfurt am Main",
   "country": "Germany",
-  "ip": "193.176.86.134"
+  "ip": "37.120.196.54"
 }
 ```
 
 ```JSON
-GET /request
+GET /request?whatever
 
 {
   "host": "wiam.cc",
   "method": "GET",
   "proto": "HTTP/1.0",
-  "uri": "/request"
+  "uri": "/request?whatever"
 }
 ```
 
@@ -71,13 +71,13 @@ GET /header
 Default production mode
 
 ```sh
-docker run -p 8080:8080 -d locnh/whoami
+docker run -p 8080:8080 -d locnh/wiam
 ```
 
 or GIN debug
 
 ```sh
-docker run -p 8080:8080 -e GIN_MODE=debug -d locnh/whoami
+docker run -p 8080:8080 -e GIN_MODE=debug -d locnh/wiam
 ```
 
 ## Contribute
