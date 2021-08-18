@@ -20,7 +20,12 @@ func main() {
 
 	// return header, for debugging behind CDN
 	r.GET("/header", func(c *gin.Context) {
-		c.JSON(200, c.Request.Header)
+		json, err := json.MarshalIndent(c.Request.Header, "", "  ")
+		if err != nil {
+			c.JSON(500, gin.H{"result": "failed"})
+		} else {
+			c.String(200, "%s", json)
+		}
 	})
 
 	r.GET("/request", func(c *gin.Context) {
