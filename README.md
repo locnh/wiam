@@ -6,7 +6,6 @@ Live here: [wiam.cc](https://wiam.cc)
 These are the Docker Hub autobuild images located [here](https://hub.docker.com/r/locnh/wiam/).
 
 [![License](https://img.shields.io/github/license/locnh/wiam)](/LICENSE)
-[![Build Status](https://travis-ci.com/locnh/wiam.svg?branch=master)](https://travis-ci.com/locnh/wiam)
 [![Docker Image Size (latest semver)](https://img.shields.io/docker/image-size/locnh/wiam?sort=semver)](/Dockerfile)
 [![Docker Image Version (latest semver)](https://img.shields.io/docker/v/locnh/wiam?sort=semver)](/Dockerfile)
 [![Docker](https://img.shields.io/docker/pulls/locnh/wiam)](https://hub.docker.com/r/locnh/wiam)

@@ -1,7 +1,7 @@
 package main
 
 import (
-	"encoding/json"
+	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
@@ -11,39 +11,20 @@ func main() {
 
 	// return only IP, for no-ip, ddns services alike
 	r.GET("/ip", func(c *gin.Context) {
-		if c.GetHeader("X-Forwarded-For") != "" {
-			c.String(200, "%s", c.GetHeader("X-Forwarded-For"))
-		} else {
-			c.String(200, "%s", c.ClientIP())
-		}
+		c.String(http.StatusOK, "%s", c.ClientIP())
 	})
 
 	// return header, for debugging behind CDN
 	r.GET("/header", func(c *gin.Context) {
-		json, err := json.MarshalIndent(c.Request.Header, "", "  ")
-		if err != nil {
-			c.JSON(500, gin.H{"result": "failed"})
-		} else {
-			c.String(200, "%s", json)
-		}
+		c.IndentedJSON(http.StatusOK, c.Request.Header)
 	})
 
 	r.GET("/request", func(c *gin.Context) {
-		json, err := json.MarshalIndent(getRequestInfo(c), "", "  ")
-		if err != nil {
-			c.JSON(500, gin.H{"result": "failed"})
-		} else {
-			c.String(200, "%s", json)
-		}
+		c.IndentedJSON(http.StatusOK, getRequestInfo(c))
 	})
 
 	r.NoRoute(func(c *gin.Context) {
-		json, err := json.MarshalIndent(getClientInfo(c), "", "  ")
-		if err != nil {
-			c.JSON(500, gin.H{"result": "failed"})
-		} else {
-			c.String(200, "%s", json)
-		}
+		c.IndentedJSON(http.StatusOK, getClientInfo(c))
 	})
 
 	r.Run()
@@ -53,11 +34,7 @@ func getClientInfo(c *gin.Context) map[string]string {
 	client := make(map[string]string)
 
 	// Client IP
-	if c.GetHeader("X-Forwarded-For") != "" {
-		client["ip"] = c.GetHeader("X-Forwarded-For")
-	} else {
-		client["ip"] = c.ClientIP()
-	}
+	client["ip"] = c.ClientIP()
 
 	// CloudFlare
 	if c.GetHeader("cf-ipcountry") != "" {
