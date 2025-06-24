@@ -1,4 +1,4 @@
-FROM golang:alpine as builder
+FROM golang:alpine AS builder
 
 RUN mkdir /app
 ADD . /app
@@ -8,14 +8,14 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o wiam .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o server .
 
 
 FROM alpine
 
-COPY --from=builder /app/wiam /wiam
+COPY --from=builder /app/server /server
 
 EXPOSE 8080
 ENV GIN_MODE=release
 
-ENTRYPOINT ["/wiam"]
+ENTRYPOINT ["/server"]
