@@ -34,7 +34,7 @@ GET /request?whatever
 ```
 
 ```JSON
-GET /header
+GET /headers
 
 {
   "Accept": [
