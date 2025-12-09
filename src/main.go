@@ -4,7 +4,9 @@ import (
 	"encoding/base64"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 )
@@ -128,6 +130,21 @@ func main() {
 			c.Header("WWW-Authenticate", "Basic realm=\"Restricted Area\"")
 			c.Status(http.StatusUnauthorized)
 		}
+	})
+
+	// Delay endpoint
+	r.GET("/delay/:n", func(c *gin.Context) {
+		delayStr := c.Param("n")
+		delay, err := strconv.Atoi(delayStr)
+		if err != nil || delay < 0 || delay > 10 {
+			c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid or out of range delay value. Must be between 0 and 10 seconds."})
+			return
+		}
+
+		time.Sleep(time.Duration(delay) * time.Second)
+		c.JSON(http.StatusOK, gin.H{
+			"message": fmt.Sprintf("Response delayed by %d seconds", delay),
+		})
 	})
 
 	// return all request details for all methods
