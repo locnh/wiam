@@ -81,7 +81,7 @@ func main() {
 	})
 
 	// basic authentication
-	r.GET("/basic-auth/:username/:password", func(c *gin.Context) {
+	r.GET("/auth/basic/:username/:password", func(c *gin.Context) {
 		username := c.Param("username")
 		password := c.Param("password")
 
