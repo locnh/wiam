@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"fmt"
 	"net/http"
 	"strings"
@@ -75,6 +76,58 @@ func main() {
 		// Redirect to the same endpoint with decremented count
 		redirectURL := fmt.Sprintf("/redirect/%d", redirectCount-1)
 		c.Redirect(http.StatusFound, redirectURL)
+	})
+
+	// basic authentication
+	r.GET("/basic-auth/:username/:password", func(c *gin.Context) {
+		username := c.Param("username")
+		password := c.Param("password")
+
+		auth := c.GetHeader("Authorization")
+		if auth == "" {
+			c.Header("WWW-Authenticate", "Basic realm=\"Restricted Area\"")
+			c.Status(http.StatusUnauthorized)
+			return
+		}
+
+		// Check if the Authorization header starts with "Basic "
+		if !strings.HasPrefix(auth, "Basic ") {
+			c.Header("WWW-Authenticate", "Basic realm=\"Restricted Area\"")
+			c.Status(http.StatusUnauthorized)
+			return
+		}
+
+		// Extract the base64 encoded part
+		encoded := strings.TrimPrefix(auth, "Basic ")
+		if encoded == "" {
+			c.Header("WWW-Authenticate", "Basic realm=\"Restricted Area\"")
+			c.Status(http.StatusUnauthorized)
+			return
+		}
+
+		// Decode the base64 encoded credentials
+		decoded, err := base64.StdEncoding.DecodeString(encoded)
+		if err != nil {
+			c.Header("WWW-Authenticate", "Basic realm=\"Restricted Area\"")
+			c.Status(http.StatusUnauthorized)
+			return
+		}
+
+		// Split the decoded string into username and password
+		creds := strings.Split(string(decoded), ":")
+		if len(creds) != 2 {
+			c.Header("WWW-Authenticate", "Basic realm=\"Restricted Area\"")
+			c.Status(http.StatusUnauthorized)
+			return
+		}
+
+		// Check if the credentials match
+		if creds[0] == username && creds[1] == password {
+			c.String(http.StatusOK, "Access granted")
+		} else {
+			c.Header("WWW-Authenticate", "Basic realm=\"Restricted Area\"")
+			c.Status(http.StatusUnauthorized)
+		}
 	})
 
 	// return all request details for all methods
