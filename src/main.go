@@ -29,14 +29,16 @@ func main() {
 		c.IndentedJSON(http.StatusOK, c.Request.Cookies())
 	})
 
-	// return User-Agent
-	r.GET("/ua", func(c *gin.Context) {
+	// return User-Agent (register both /ua and /user-agent)
+	uaHandler := func(c *gin.Context) {
 		userAgent := c.GetHeader("X-Real-User-Agent")
 		if userAgent == "" {
 			userAgent = c.Request.UserAgent()
 		}
 		c.String(http.StatusOK, "%s", userAgent)
-	})
+	}
+	r.GET("/ua", uaHandler)
+	r.GET("/user-agent", uaHandler)
 
 	// return status code
 	r.GET("/status/:code", func(c *gin.Context) {
@@ -147,8 +149,11 @@ func main() {
 		})
 	})
 
-	// return all request details for all methods
+	// return all request details for all methods (match both /request and /request/...)
 	r.Any("/request", func(c *gin.Context) {
+		c.IndentedJSON(http.StatusOK, getAllRequestInfo(c))
+	})
+	r.Any("/request/*any", func(c *gin.Context) {
 		c.IndentedJSON(http.StatusOK, getAllRequestInfo(c))
 	})
 
@@ -199,7 +204,15 @@ func getAllRequestInfo(c *gin.Context) map[string]interface{} {
 	// URL parameters
 	params := make(map[string]string)
 	for _, param := range c.Params {
+		// skip the wildcard "any" param — we'll expose it as "path" only
+		if param.Key == "any" {
+			continue
+		}
 		params[param.Key] = param.Value
+	}
+	// include wildcard path (e.g. "/abc/def" -> "abc/def")
+	if p := c.Param("any"); p != "" {
+		params["path"] = strings.TrimPrefix(p, "/")
 	}
 	result["params"] = params
 
